@@ -1,1 +1,28 @@
 @import "tailwindcss";
+
+@theme {
+  /* Main background of the application */
+  --color-background: #09090b; 
+  /* Primary body text color */
+  --color-foreground: #f4f4f5; 
+
+  /* Background for cards and panels */
+  --color-card: #18181b; 
+  /* Text color inside cards and panels */
+  --color-card-foreground: #f4f4f5;
+
+  /* Accent color for primary buttons and active states */
+  --color-primary: #6366f1; 
+  /* Text color on top of primary color elements */
+  --color-primary-foreground: #ffffff;
+
+  /* Background for tabs or secondary content */
+  --color-muted: #27272a; 
+  /* Text color for secondary or descriptive labels */
+  --color-muted-foreground: #a1a1aa; 
+
+  /* Borders, dividers, and outlines */
+  --color-border: #27272a; 
+  --color-input: #27272a;
+  --color-ring: #6366f1;
+}
