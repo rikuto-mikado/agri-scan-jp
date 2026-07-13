@@ -2,7 +2,35 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+import { useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css"
+import L from "leaflet"
+
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png"
+import markerIcon from "leaflet/dist/images/marker-icon.png"
+import markerShadow from "leaflet/dist/images/marker-shadow.png"
+
+delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
+})
+
+function MapEvents({ onClick }: { onClick: (lat: number, lng: number) => void }) {
+  useMapEvents({
+    click(e) {
+      onClick(e.latlng.lat, e.latlng.lng)
+    }
+  })
+  return null
+}
+
 function App() {
+
+  const [position, setPosition] = useState<[number, number]>([35.6895, 139.6917])
+
   return (
     <div className="flex flex-col h-screen w-full bg-background text-foreground">
       {/* Header */}
@@ -38,7 +66,9 @@ function App() {
 
               <CardContent className="flex flex-col justify-between h-full gap-2">
                 <div>
-                  <p className="text-sm text-slate-500">Latitude: 35.6895, Longitude: 139.6917</p>
+                  <p className="text-sm text-slate-500">
+                    Latitude: {position[0].toFixed(4)}, Longitude: {position[1].toFixed(4)}
+                  </p>
                 </div>
                 <Button className="w-full mt-2">Get Results</Button>
               </CardContent>
@@ -63,10 +93,23 @@ function App() {
         </aside>
 
         {/* Right side content */}
-        <main className="flex-1 bg-slate-200 flex items-center justify-center relative">
-          <p className="text-slate-400 font-medium">Select an analysis to view details</p>
+        <main className="flex-1 relative z-0">
+          <MapContainer
+            center={position}
+            zoom={6}
+            scrollWheelZoom={true}
+            className="h-full w-full"
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            />
+            <Marker position={position}>
+          <Popup>Selected Location</Popup>
+        </Marker>
+        <MapEvents onClick={(lat, lng) => setPosition([lat, lng])} />
+          </MapContainer>
         </main>
-
       </div>
     </div>
   )
