@@ -27,9 +27,32 @@ function MapEvents({ onClick }: { onClick: (lat: number, lng: number) => void })
   return null
 }
 
+interface CropeScore {
+  name: string;
+  score: number;
+}
+
+type AnalysisResult = Record<string, CropeScore>;
+
 function App() {
 
   const [position, setPosition] = useState<[number, number]>([35.6895, 139.6917])
+  const [isLoading, setIsLoading] = useState(false)
+
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
+
+  const handleGetResults = async () => {
+    setIsLoading(true)
+    try {
+      const res = await fetch(`http://localhost:8000/api/score/?lat=${position[0]}$lng=${position[1]}`)
+      const data = await res.json()
+      setAnalysisResult(data)
+    } catch (error) {
+      console.log('fall to get data', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <div className="flex flex-col h-screen w-full bg-background text-foreground">
@@ -70,7 +93,14 @@ function App() {
                     Latitude: {position[0].toFixed(4)}, Longitude: {position[1].toFixed(4)}
                   </p>
                 </div>
-                <Button className="w-full mt-2">Get Results</Button>
+                {/* <Button className="w-full mt-2">Get Results</Button> */}
+                <Button
+                  className="w-full mt-2"
+                  onClick={handleGetResults}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Fetching..." : "Get Results"}
+                </Button>
               </CardContent>
 
             </Card>
@@ -80,10 +110,39 @@ function App() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">Analysis Details</CardTitle>
               </CardHeader>
-              <CardContent className="h-full flex items-center justify-center">
+              {/* <CardContent className="h-full flex items-center justify-center">
                 <p className="w-fill p-4 border border-dashed rounded-md bg-slate-50 text-slate-500 text-sm text-center">
                   Click on the map to get the results.
                 </p>
+              </CardContent> */}
+              <CardContent className="h-full flex item-center justify-center p-6">
+                {isLoading ? (
+                  <p className="text-slate-500">Loading data...</p>
+                ) : analysisResult ? (
+                  // <div className="w-full h-full text-sm text-slate-700">
+                  //   <p className="font-bold mb-2">Total Score: {analysisResult.score}</p>
+                  //   <pre className="bg-slate-100 p-2 rounded overflow-auto max-h-32">
+                  //     {JSON.stringify(analysisResult, null, 2)}
+                  //   </pre>
+                  // </div>
+                  <div className="w-full h-full text-sm text-slate-700">
+                    <div className="flex flex-col gap-2 mb-4">
+                      {Object.entries(analysisResult).map(([cropId, item]) => (
+                        <div key={cropId} className="flex justify-between border-b pb-1">
+                          <span>{item.name}</span>
+                          <span className="font-semibold text-indigo-600">{item.score}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <pre className="bg-slate-100 p-2 rounded overflow-auto max-h-32">
+                      {JSON.stringify(analysisResult, null, 2)}
+                    </pre>
+                  </div>
+                ) : (
+                  <p className="w-full p-4 border border-dashed rounded-md bg-slate-50 text-slate500 text-sm text-center">
+                    Click on the map and press get result
+                  </p>
+                )}
               </CardContent>
 
             </Card>
