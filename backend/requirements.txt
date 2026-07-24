@@ -1,0 +1,7 @@
+Django>=5.0
+djangorestframework
+django-cors-headers
+pandas
+openmeteo-requests
+requests-cache
+retry-requests
