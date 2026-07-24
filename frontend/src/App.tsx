@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+// import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
@@ -68,17 +68,17 @@ function App() {
 
           <div>
             <h2 className="text-lg font-semibold mb-4">Potential Environmental Analyses</h2>
-            <p className="p-4 border rounded-md bg-slate-50 text-slate-500 text-sm">Select an analysis to view its details.</p>
+            {/* <p className="p-4 border rounded-md bg-slate-50 text-slate-500 text-sm">Select an analysis to view its details.</p> */}
           </div>
 
-          <Tabs defaultValue="overview" className="w-full mb-6">
+          {/* <Tabs defaultValue="overview" className="w-full mb-6">
 
             <TabsList className="grid w-full grid-cols-2 gap-2 mt-6">
               <TabsTrigger value="overview" className="bg-indigo-500 hover:bg-fuchsia-500">Overview</TabsTrigger>
               <TabsTrigger value="simulation" className="bg-indigo-500 hover:bg-fuchsia-500">Simulation</TabsTrigger>
             </TabsList>
 
-          </Tabs>
+          </Tabs> */}
 
           <div className="flex flex-col gap-4">
             <Card className="flex-1">

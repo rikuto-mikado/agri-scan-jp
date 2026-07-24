@@ -1,7 +1,10 @@
+import logging
 import openmeteo_requests
 import pandas as pd
 import requests_cache
 from retry_requests import retry
+
+logger = logging.getLogger(__name__)
 
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession(".cache", expire_after=-1)
@@ -90,10 +93,10 @@ def get_weather_data(
 
     # # Process first location. Add a for-loop for multiple locations or weather models
     # response = responses[0]
-    print(f"Coordinates: {response.Latitude()}°N {response.Longitude()}°E")
-    print(f"Elevation: {response.Elevation()} m asl")
-    print(f"Timezone: {response.Timezone()}{response.TimezoneAbbreviation()}")
-    print(f"Timezone difference to GMT+0: {response.UtcOffsetSeconds()}s")
+    logger.info("Coordinates: %s°N %s°E", response.Latitude(), response.Longitude())
+    logger.info("Elevation: %s m asl", response.Elevation())
+    logger.info("Timezone: %s%s", response.Timezone(), response.TimezoneAbbreviation())
+    logger.info("Timezone difference to GMT+0: %ss", response.UtcOffsetSeconds())
 
     # Process hourly data. The order of variables needs to be the same as requested.
     hourly = response.Hourly()
@@ -129,7 +132,7 @@ def get_weather_data(
     hourly_data["relative_humidity_2m"] = hourly_relative_humidity_2m
 
     hourly_dataframe = pd.DataFrame(data=hourly_data)
-    print("\nHourly data\n", hourly_dataframe)
+    logger.debug("Hourly data:\n%s", hourly_dataframe)
 
     # Process daily data. The order of variables needs to be the same as requested.
     daily = response.Daily()
@@ -159,6 +162,6 @@ def get_weather_data(
     daily_data["shortwave_radiation_sum"] = daily_shortwave_radiation_sum
 
     daily_dataframe = pd.DataFrame(data=daily_data)
-    print("\nDaily data\n", daily_dataframe)
+    logger.debug("Daily data:\n%s", daily_dataframe)
 
     return daily_dataframe
