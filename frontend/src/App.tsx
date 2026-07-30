@@ -38,17 +38,22 @@ function App() {
 
   const [position, setPosition] = useState<[number, number]>([35.6895, 139.6917])
   const [isLoading, setIsLoading] = useState(false)
-
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
 
   const handleGetResults = async () => {
     setIsLoading(true)
+    setErrorMessage(null);
     try {
-      const res = await fetch(`http://localhost:8000/api/score/?lat=${position[0]}$lng=${position[1]}`)
+      const res = await fetch(`http://localhost:8000/api/score/?lat=${position[0]}&lon=${position[1]}`)
+      if (!res.ok) {
+        throw new Error(`Server returned status: ${res.status}`)
+      }
       const data = await res.json()
       setAnalysisResult(data)
     } catch (error) {
       console.log('fall to get data', error)
+      setErrorMessage("Failed to fetch data. Make sure the backend server is running.")
     } finally {
       setIsLoading(false)
     }
@@ -118,6 +123,8 @@ function App() {
               <CardContent className="h-full flex item-center justify-center p-6">
                 {isLoading ? (
                   <p className="text-slate-500">Loading data...</p>
+                ) : errorMessage ? (
+                  <p className="text-red-500 text-sm text-center font-medium">{errorMessage}</p>
                 ) : analysisResult ? (
                   // <div className="w-full h-full text-sm text-slate-700">
                   //   <p className="font-bold mb-2">Total Score: {analysisResult.score}</p>
