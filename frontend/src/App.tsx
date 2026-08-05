@@ -120,7 +120,7 @@ function App() {
                   Click on the map to get the results.
                 </p>
               </CardContent> */}
-              <CardContent className="h-full flex item-center justify-center p-6">
+              <CardContent className="h-full flex items-center justify-center p-6">
                 {isLoading ? (
                   <p className="text-slate-500">Loading data...</p>
                 ) : errorMessage ? (
@@ -141,9 +141,9 @@ function App() {
                         </div>
                       ))}
                     </div>
-                    <pre className="bg-slate-100 p-2 rounded overflow-auto max-h-32">
+                    {/* <pre className="bg-slate-100 p-2 rounded overflow-auto max-h-32">
                       {JSON.stringify(analysisResult, null, 2)}
-                    </pre>
+                    </pre> */}
                   </div>
                 ) : (
                   <p className="w-full p-4 border border-dashed rounded-md bg-slate-50 text-slate500 text-sm text-center">

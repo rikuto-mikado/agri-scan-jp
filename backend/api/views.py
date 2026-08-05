@@ -18,15 +18,17 @@ class SuitabilityScoreView(APIView):
         lat = request.query_params.get("lat")
         lon = request.query_params.get("lon")
 
-        # if not lat or not lon:
-        #     return Response(
-        #         {"error": "Latitude and longitude data are required."},
-        #         status=status.HTTP_400_BAD_REQUEST,
-        #     )
+        if not lat or not lon:
+            return Response(
+                {"error": "Latitude and longitude data are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
-            daily_df = get_weather_data(float(lat), float(lon))
-            results = calculate_suitability_scores(daily_df)
+            lat_f = float(lat)
+            lon_f = float(lon)
+            daily_df = get_weather_data(lat_f, lon_f)
+            results = calculate_suitability_scores(daily_df, lat=lat_f, lon=lon_f)
             return Response(results, status=status.HTTP_200_OK)
 
         except Exception as e:
